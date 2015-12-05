@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JavaScriptLibraryMappings">
+    <file url="file://$PROJECT_DIR$" libraries="{auth node_modules}" />
+    <file url="PROJECT" libraries="{angular-ui-bootstrap-DefinitelyTyped, angular-ui-router-DefinitelyTyped, angularjs-DefinitelyTyped, crypto-js-DefinitelyTyped, express-DefinitelyTyped, gruntjs-DefinitelyTyped, jasmine-DefinitelyTyped, karma-DefinitelyTyped, karma-jasmine-DefinitelyTyped, mongodb-DefinitelyTyped, mongoose-DefinitelyTyped, node-DefinitelyTyped, npm-DefinitelyTyped, phantom-DefinitelyTyped}" />
+  </component>
+</project>
