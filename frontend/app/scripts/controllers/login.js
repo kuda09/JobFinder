@@ -7,7 +7,7 @@ var LoginCtrl = function ($scope, $http, alert, authToken, $state, $timeout, API
 
         var handleFormSubmitSuccess = function (response) {
 
-            alert('success', 'Account logged in', 'Welcome' + response.user.email + "!");
+            alert('success', 'Account logged in', 'Welcome ' + response.user.email + "!");
             authToken.setToken(response.token);
 
 
@@ -15,13 +15,13 @@ var LoginCtrl = function ($scope, $http, alert, authToken, $state, $timeout, API
 
                 $state.go('main');
 
-            }, 3000);
+            }, 2000);
 
         }
 
         var handleFormSubmitError = function (error) {
 
-            alert('warning', 'Oops', 'Cound not login' + error.message);
+            alert('warning', 'Oops', 'Cound not login ' + error.message);
 
         };
 

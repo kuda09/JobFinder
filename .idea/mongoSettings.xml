@@ -12,6 +12,15 @@
           </option>
           <option name="userDatabase" value="psjwt" />
         </ServerConfiguration>
+        <ServerConfiguration>
+          <option name="label" value="jobFinderDb" />
+          <option name="serverUrls">
+            <list>
+              <option value="localhost:27017" />
+            </list>
+          </option>
+          <option name="userDatabase" value="jobFinderDb" />
+        </ServerConfiguration>
       </list>
     </option>
     <option name="shellPath" value="C:\mongodb\bin\mongod.exe" />

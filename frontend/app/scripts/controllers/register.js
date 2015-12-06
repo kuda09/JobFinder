@@ -6,7 +6,7 @@ var RegisterCtrl = function ($scope, $http, alert, authToken, $state, $timeout, 
 
         var handleFormSubmitSuccess = function (response) {
 
-            alert('success', 'Account created', 'Welcome' + response.user.email + "!");
+            alert('success', 'Account created', 'Welcome ' + response.user.email + "!");
             authToken.setToken(response.token);
 
 
@@ -14,13 +14,13 @@ var RegisterCtrl = function ($scope, $http, alert, authToken, $state, $timeout, 
 
                 $state.go('main');
 
-            }, 3000);
+            }, 2000);
 
         }
 
         var handleFormSubmitError = function (error) {
 
-            alert('warning', 'Oops', 'Cound not register');
+            alert('warning', 'Oops', 'Cound not register ');
 
         }
 

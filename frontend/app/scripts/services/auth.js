@@ -8,14 +8,14 @@
  * Service in the authApp.
  */
 angular.module('authApp')
-    .service('auth', function auth($scope, $http, alert, authToken, $state, $timeout, API_URL) {
+    .factory('auth', function auth( $http, authToken, API_URL) {
 
 
         var loginURL = API_URL + "login";
         var registerURL = API_URL + "register";
         var user;
 
-        this.login = function (email, password) {
+        var login = function (email, password) {
 
             user = {
 
@@ -23,12 +23,12 @@ angular.module('authApp')
                 password: password
             };
 
-             return $http.post(loginURL, JSON.stringify(user), {headers: {'Content-Type': 'application/json'}});
+             return $http.post(loginURL, user, {headers: {'Content-Type': 'application/json'}});
 
         }
 
 
-        this.register = function (email, password) {
+        var register = function (email, password) {
 
             user = {
 
@@ -37,8 +37,14 @@ angular.module('authApp')
             };
 
 
-            return $http.post(registerURL, JSON.stringify(user), {headers: {'Content-Type': 'application/json'}});
+            return $http.post(registerURL, user, {headers: {'Content-Type': 'application/json'}});
 
+        }
+
+        return {
+
+            login: login,
+            register: register
         }
 
     });
