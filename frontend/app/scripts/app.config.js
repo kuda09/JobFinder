@@ -61,5 +61,20 @@
 
 
         })
-        .constant('API_URL', 'http://localhost:3000/');
+        .run(function ($window) {
+
+            var params = $window.location.search.substring(1);
+
+            if(params && $window.opener && $window.opener.location.origin === $window.location.origin) {
+
+                var pair = params.split("=");
+                var code = decodeURIComponent(pair[1]);
+
+                $window.opener.postMessage(code, $window.location.origin);
+            }
+
+        })
+        .constant('API_URL', 'http://localhost:3000/')
+        .constant('CLIENT_ID', '1036682895508-8oq4bdn3f36h1gsnvn2fiu0mpk9moic6.apps.googleusercontent.com')
+        .constant('GOOGLE_AUTH_ENDPOINT', 'https://accounts.google.com/o/oauth2/auth');
 })();

@@ -35,7 +35,6 @@ angular.module('authApp')
             return !!getToken();
 
         }
-        console.log(isAuthenticated());
 
         var removeToken = function () {
 

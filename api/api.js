@@ -2,9 +2,8 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongoose = require("mongoose");
 var passport = require("passport");
-var LocalStrategy  = require("passport-local").Strategy;
-
-
+var LocalStrategy = require("passport-local").Strategy;
+var requestProvider = require("request");
 
 
 var UserModel = require("./models/User");
@@ -19,15 +18,13 @@ app.use(bodyParser.json());
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-
 passport.serializeUser(function (user, done) {
 
     done(null, user.id);
 
 });
 
-passport.deserializeUser(function(id, done) {
+passport.deserializeUser(function (id, done) {
     User.findById(id, function (error, user) {
         done(error, user);
     });
@@ -36,7 +33,7 @@ passport.deserializeUser(function(id, done) {
 var getUserById;
 var strategyOptions = {usernameField: 'email'};
 
-var loginStrategy = new LocalStrategy( strategyOptions, function (email, password, done) {
+var loginStrategy = new LocalStrategy(strategyOptions, function (email, password, done) {
 
     var searchUser = {
         email: email
@@ -50,7 +47,7 @@ var loginStrategy = new LocalStrategy( strategyOptions, function (email, passwor
         if (error) return done(error);
 
 
-        if(!getUserById) return done(null, false, {message: 'Wrong email/password'});
+        if (!getUserById) return done(null, false, {message: 'Wrong email/password'});
 
         getUserById.comparePasswords(password, function (error, isMatch) {
 
@@ -64,8 +61,7 @@ var loginStrategy = new LocalStrategy( strategyOptions, function (email, passwor
 
 });
 
-
-var registerStrategy = new LocalStrategy (strategyOptions, function (email, password, done) {
+var registerStrategy = new LocalStrategy(strategyOptions, function (email, password, done) {
 
 
     var searchUser = {
@@ -76,7 +72,7 @@ var registerStrategy = new LocalStrategy (strategyOptions, function (email, pass
 
         if (error) return done(error);
 
-        if(user) return done(null, false, {message: 'Username already exists'});
+        if (user) return done(null, false, {message: 'Username already exists'});
 
         var newUser = new User({
 
@@ -107,13 +103,6 @@ app.use(function (request, response, next) {
     next();
 })
 
-
-app.post('/register', passport.authenticate('local-register'),  function (request, response) {
-
-    createSendToken(request.user, response);
-
-});
-
 var jobs = [
 
     'Cook',
@@ -138,12 +127,79 @@ app.get('/jobs', function (request, response) {
 
 });
 
-app.post('/login', passport.authenticate('local-login'), function (request , response){
+app.post('/login', passport.authenticate('local-login'), function (request, response) {
 
 
-    createSendToken(getUserById , response);
+    createSendToken(getUserById, response);
 
 });
+
+app.post('/register', passport.authenticate('local-register'), function (request, response) {
+
+    createSendToken(request.user, response);
+
+});
+
+app.post("/auth/google", function (request, response) {
+
+    var authorizationCode = request.body.authorizationCode;
+    var client_id = request.body.client_id;
+    var redirect_uri = request.body.redirect_uri;
+    var client_secret = 'ewhjxdcKatFHkEhKnYV9QFsM';
+
+    var postToGoogleParams = {
+
+        code: authorizationCode,
+        client_id: client_id,
+        client_secret: client_secret,
+        redirect_uri: redirect_uri,
+        grant_type: 'authorization_code'
+    }
+
+    var url = "https://accounts.google.com/o/oauth2/token";
+    var API_URL = "https://www.googleapis.com/plus/v1/me/openIdConnect"
+
+    requestProvider.post(url, {
+        json: true,
+        form: postToGoogleParams
+    }, function (error, response, token) {
+
+        var accessToken = token.access_token;
+
+        console.log(accessToken);
+        var headers = {
+            Authorization: accessToken
+        }
+
+        requestProvider.get({
+            url: API_URL,
+            headers: headers,
+            json: true
+        }, function (error, response, profile) {
+
+            User.findOne({googleId: profile.sub}, function (error , foundUser) {
+
+                if(foundUser) return createSendToken(foundUser, response);
+
+                var newUser = new User();
+                newUser.googleId = profile.sub;
+                newUser.displayName = profile.name;
+
+                newUser.save(function (error) {
+
+                    if(error) return next(error);
+
+                    createSendToken(newUser, response)
+
+                })
+
+            })
+
+        })
+
+    });
+
+})
 
 function createSendToken(user, response) {
 

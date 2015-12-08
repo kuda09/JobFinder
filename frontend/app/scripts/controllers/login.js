@@ -29,6 +29,24 @@ var LoginCtrl = function ($scope, $http, alert, authToken, $state, $timeout, API
             .success(handleFormSubmitSuccess)
             .error(handleFormSubmitError);
 
+    };
+
+
+    $scope.googleLogin = function (){
+
+
+        var success = function (response) {
+
+            alert('success', 'Account logged in', 'Welcome ' + response.user.displayName + "!");
+            authToken.setToken(response.token);
+        }
+
+        var error = function () {
+            alert('warning', 'Oops', 'Cound not login ' + error.message);
+        }
+
+
+        auth.googleAuth().then(success, error);
     }
 };
 
